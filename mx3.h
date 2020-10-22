@@ -11,12 +11,13 @@ namespace mx3 {
 static const uint64_t C = 0xbea225f9eb34556d;
 
 inline uint64_t mix(uint64_t x) {
-	x *= C;
-	x ^= x >> 33;
+	x ^= x >> 32;
 	x *= C;
 	x ^= x >> 29;
 	x *= C;
-	x ^= x >> 39;
+	x ^= x >> 32;
+	x *= C;
+	x ^= x >> 29;
 	return x;
 }
 
@@ -32,7 +33,7 @@ namespace internal {
 
 inline uint64_t mix_stream(uint64_t h, uint64_t x) {
 	x *= C;
-	x ^= (x >> 57) ^ (x >> 33);
+	x ^= (x >> 57) ^ (x >> 43);
 	x *= C;
 	h += x;
 	h *= C;

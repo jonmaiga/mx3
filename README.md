@@ -4,24 +4,30 @@ Repo with non-cryptographic bit mixer, pseudo random number generator and a hash
 * [The construct of a bit mixer](http://jonkagstrom.com/bit-mixer-construction/index.html)
 * [Tuning bit mixers](http://jonkagstrom.com/tuning-bit-mixers/index.html)
 * [The mx3 mix/prng/hash functions](http://jonkagstrom.com/mx3/index.html)
+* [Improved mx3 and the RRC test](http://jonkagstrom.com/mx3/mx3_rev2.html)
 
 In short, first procedurally generated stack machines were used to find good mixer constructions. Then each construction was tuned to see how far it could be pushed and finally I decided to take the simplest most promising mixer and publish the result here.
+
+## Revision 2
+
+[Revision 2](http://jonkagstrom.com/mx3/mx3_rev2.html) greatly improves the quality of the mixer by adding an initial xor-shift and adjusting the xor-shift constants. The quality of hash stream mixer is also improved.
 
 ## mx3::mix
 
 Here is the mixer
 
     inline uint64_t mix(uint64_t x) {
-        x *= 0xbea225f9eb34556d;
-        x ^= x >> 33;
+        x ^= x >> 32;
         x *= 0xbea225f9eb34556d;
         x ^= x >> 29;
         x *= 0xbea225f9eb34556d;
-        x ^= x >> 39;
+        x ^= x >> 32;
+        x *= 0xbea225f9eb34556d;
+        x ^= x >> 29;
         return x;
     }
 
-The name 'mx3' comes from this construction, multiply then xor-shift and repeat three times (referred to as 'mxmxmx' in posts).
+The name 'mx3' comes from this construction (revision 1), multiply then xor-shift and repeat three times (referred to as 'mxmxmx' in posts).
 
 ## mx3::random
 
@@ -42,6 +48,7 @@ Uses the same construction, but to favor speed a lighter version mixes the strea
 
 ## Quality
 
+* mx3::mix passes [RRC-64-42-TF2-0.94](https://mostlymangling.blogspot.com/2019/01/better-stronger-mixer-and-test-procedure.html#TestProcedure), also see [mx3 revision 2](http://jonkagstrom.com/mx3/mx3_rev2.html)
 * mx3::random passes [PractRand](http://pracrand.sourceforge.net/) 2^45 (>32TB) without suspicion
 * mx3::hash passes all [SMHasher](https://github.com/rurban/smhasher) tests
 
@@ -49,9 +56,12 @@ Uses the same construction, but to favor speed a lighter version mixes the strea
 
 A short preliminary note on speed (will update if I get around to do better tests)
 
-* mx3::mix is in my limited tests as fast as SplitMix (even though it has one more multiplication!).
-
-* mx3::random is as reference again close to SplitMix.
+mixer|MSVC, Threadripper 3970<span>@</span>3.7GHz, ms|MSVC, i7-4790k@4GHz, ms|Clang, i7@2GHz (mac), ms|RRC
+--|--|--|--|--
+nop|1133|1148|1300|-
+splitmix|4047|4716|7917|16
+mx3_rev1|4213|4688|7557|21
+mx3_rev2|5173|5975|10335|>42
 
 * mx3::hash the speed is according to SMHasher for large keys 8000-9000 MiB/sec and for small keys about 40-50 cycles/hash.
 
