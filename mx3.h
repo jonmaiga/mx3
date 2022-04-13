@@ -31,11 +31,30 @@ private:
 
 namespace internal {
 
+inline uint64_t mix_stream(uint64_t h, uint64_t a, uint64_t b, uint64_t c, uint64_t d) {
+	a *= C;
+	b *= C;
+	c *= C;
+	d *= C;
+	a ^= (a >> 57) ^ (a >> 33);
+	b ^= (b >> 57) ^ (b >> 33);
+	c ^= (c >> 57) ^ (c >> 33);
+	d ^= (d >> 57) ^ (d >> 33);
+	h += a * C;
+	h *= C;
+	h += b * C;
+	h *= C;
+	h += c * C;
+	h *= C;
+	h += d * C;
+	h *= C;
+	return h;
+}
+
 inline uint64_t mix_stream(uint64_t h, uint64_t x) {
 	x *= C;
-	x ^= (x >> 57) ^ (x >> 43);
-	x *= C;
-	h += x;
+	x ^= (x >> 57) ^ (x >> 33);
+	h += x * C;
 	h *= C;
 	return h;
 }
@@ -50,10 +69,8 @@ inline uint64_t hash(const uint8_t* buf, size_t len, uint64_t seed) {
 	uint64_t h = (seed + C) ^ len;
 	while (len >= 32) {
 		len -= 32;
-		h = mix_stream(h, *buf64++);
-		h = mix_stream(h, *buf64++);
-		h = mix_stream(h, *buf64++);
-		h = mix_stream(h, *buf64++);
+		h = mix_stream(h, buf64[0], buf64[1], buf64[2], buf64[3]);
+		buf64 += 4;
 	}
 	
 	while (len >= 8) {

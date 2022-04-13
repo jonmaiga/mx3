@@ -35,7 +35,7 @@ The prng counter based and has a 64-bit state, hence it has a cycle of 2^64. Her
 
     class random {
     public:
-        explicit random(uint64_t seed) : _counter(seed) {}
+        explicit random(uint64_t seed) : _counter(mix(seed + C)) {}
         uint64_t operator()() { return mix(_counter++); }
     private:
         uint64_t _counter;
@@ -61,7 +61,7 @@ mixer|MSVC, Threadripper 3970<span>@</span>3.7GHz, ms|MSVC, i7-4790k@4GHz, ms|Cl
 nop|1133|1148|1300|-
 splitmix|4047|4716|7917|16
 mx3_rev1|4213|4688|7557|21
-mx3_rev2|5173|5975|10335|>42
+mx3_rev2|5173|5975|10335|>45
 
 * mx3::hash the speed is according to SMHasher for large keys 8000-9000 MiB/sec and for small keys about 40-50 cycles/hash.
 
