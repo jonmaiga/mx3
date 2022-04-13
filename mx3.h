@@ -23,7 +23,7 @@ inline uint64_t mix(uint64_t x) {
 
 class random {
 public:
-	explicit random(uint64_t seed) : _counter(seed) {}
+	explicit random(uint64_t seed) : _counter(mix(seed + C)) {}
 	uint64_t operator()() { return mix(_counter++); }
 private:
 	uint64_t _counter;
@@ -47,7 +47,7 @@ inline uint64_t hash(const uint8_t* buf, size_t len, uint64_t seed) {
 	const uint64_t* buf64 = reinterpret_cast<const uint64_t*>(buf);
 	const uint8_t* const tail = reinterpret_cast<const uint8_t*>(buf64 + len/8);
 
-	uint64_t h = seed ^ len;
+	uint64_t h = (seed + C) ^ len;
 	while (len >= 32) {
 		len -= 32;
 		h = mix_stream(h, *buf64++);
