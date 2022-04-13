@@ -35,7 +35,7 @@ The prng counter based and has a 64-bit state, hence it has a cycle of 2^64. Her
 
     class random {
     public:
-        explicit random(uint64_t seed) : _counter(seed) {}
+        explicit random(uint64_t seed) : _counter(mix(seed + C)) {}
         uint64_t operator()() { return mix(_counter++); }
     private:
         uint64_t _counter;
