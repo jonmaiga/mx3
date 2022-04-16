@@ -66,7 +66,7 @@ inline uint64_t hash(const uint8_t* buf, size_t len, uint64_t seed) {
 	const uint64_t* buf64 = reinterpret_cast<const uint64_t*>(buf);
 	const uint8_t* const tail = reinterpret_cast<const uint8_t*>(buf64 + len/8);
 
-	uint64_t h = (seed + C) ^ len;
+	uint64_t h = mix_stream(seed, len + 1);
 	while (len >= 32) {
 		len -= 32;
 		h = mix_stream(h, buf64[0], buf64[1], buf64[2], buf64[3]);
@@ -79,7 +79,7 @@ inline uint64_t hash(const uint8_t* buf, size_t len, uint64_t seed) {
 	}
 
 	uint64_t v = 0;
-	switch (len & 7) {
+	switch (len) {
 		case 7: v |= static_cast<uint64_t>(tail[6]) << 48;
 		case 6: v |= static_cast<uint64_t>(tail[5]) << 40;
 		case 5: v |= static_cast<uint64_t>(tail[4]) << 32;
