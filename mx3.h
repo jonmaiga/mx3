@@ -29,17 +29,23 @@ private:
 	uint64_t _counter;
 };
 
-namespace internal {
+inline uint64_t mix_stream(uint64_t h, uint64_t x) {
+	x *= C;
+	x ^= x >> 39;
+	h += x * C;
+	h *= C;
+	return h;
+}
 
 inline uint64_t mix_stream(uint64_t h, uint64_t a, uint64_t b, uint64_t c, uint64_t d) {
 	a *= C;
 	b *= C;
 	c *= C;
 	d *= C;
-	a ^= (a >> 57) ^ (a >> 33);
-	b ^= (b >> 57) ^ (b >> 33);
-	c ^= (c >> 57) ^ (c >> 33);
-	d ^= (d >> 57) ^ (d >> 33);
+	a ^= a >> 39;
+	b ^= b >> 39;
+	c ^= c >> 39;
+	d ^= d >> 39;
 	h += a * C;
 	h *= C;
 	h += b * C;
@@ -51,26 +57,16 @@ inline uint64_t mix_stream(uint64_t h, uint64_t a, uint64_t b, uint64_t c, uint6
 	return h;
 }
 
-inline uint64_t mix_stream(uint64_t h, uint64_t x) {
-	x *= C;
-	x ^= (x >> 57) ^ (x >> 33);
-	h += x * C;
-	h *= C;
-	return h;
-}
-
-}
-
 inline uint64_t hash(const uint8_t* buf, size_t len, uint64_t seed) {
-	using namespace internal;
 	const uint64_t* buf64 = reinterpret_cast<const uint64_t*>(buf);
 	const uint8_t* const tail = reinterpret_cast<const uint8_t*>(buf64 + len/8);
 
 	uint64_t h = mix_stream(seed, len + 1);
-	while (len >= 32) {
-		len -= 32;
+	while (len >= 64) {
+		len -= 64;
 		h = mix_stream(h, buf64[0], buf64[1], buf64[2], buf64[3]);
-		buf64 += 4;
+		h = mix_stream(h, buf64[4], buf64[5], buf64[6], buf64[7]);
+		buf64 += 8;
 	}
 	
 	while (len >= 8) {
