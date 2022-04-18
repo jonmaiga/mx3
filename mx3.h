@@ -2,6 +2,9 @@
 
 // author: Jon Maiga, 2020-08-03, jonkagstrom.com, @jonkagstrom
 // license: CC0 license
+//
+// v1.0.0, 2020-08-13: https://github.com/jonmaiga/mx3/releases/tag/v1.0.0
+// v2.0.0, 2020-10-22: https://github.com/jonmaiga/mx3/releases/tag/v2.0.0
 
 #include <stddef.h>
 #include <stdint.h>
