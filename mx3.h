@@ -5,6 +5,7 @@
 //
 // v1.0.0, 2020-08-13: https://github.com/jonmaiga/mx3/releases/tag/v1.0.0
 // v2.0.0, 2020-10-22: https://github.com/jonmaiga/mx3/releases/tag/v2.0.0
+// v3.0.0, 2022-04-19: https://github.com/jonmaiga/mx3/releases/tag/v3.0.0
 
 #include <stddef.h>
 #include <stdint.h>
