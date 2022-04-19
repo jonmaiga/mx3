@@ -8,9 +8,13 @@ Repo with non-cryptographic bit mixer, pseudo random number generator and a hash
 
 In short, first procedurally generated stack machines were used to find good mixer constructions. Then each construction was tuned to see how far it could be pushed and finally I decided to take the simplest most promising mixer and publish the result here.
 
-## Revision 2
+## Version 2
 
-[Revision 2](http://jonkagstrom.com/mx3/mx3_rev2.html) greatly improves the quality of the mixer by adding an initial xor-shift and adjusting the xor-shift constants. The quality of hash stream mixer is also improved.
+[Version 2](https://github.com/jonmaiga/mx3/releases/tag/v2.0.0) greatly improves the quality of the mixer by adding an initial xor-shift and adjusting the xor-shift constants. The quality of hash stream mixer is also improved. Article [here](http://jonkagstrom.com/mx3/mx3_rev2.html).
+
+## Version 3
+
+[Version 3](https://github.com/jonmaiga/mx3/releases/tag/v3.0.0) improves mx3::hash with better seeding and speed while maintaining the same good quality.
 
 ## mx3::mix
 
@@ -27,7 +31,7 @@ Here is the mixer
         return x;
     }
 
-The name 'mx3' comes from this construction (revision 1), multiply then xor-shift and repeat three times (referred to as 'mxmxmx' in posts).
+The name 'mx3' comes from this construction (version 1), multiply then xor-shift and repeat three times (referred to as 'mxmxmx' in posts).
 
 ## mx3::random
 
@@ -48,7 +52,7 @@ Uses the same construction, but to favor speed a lighter version mixes the strea
 
 ## Quality
 
-* mx3::mix passes [RRC-64-42-TF2-0.94](https://mostlymangling.blogspot.com/2019/01/better-stronger-mixer-and-test-procedure.html#TestProcedure), also see [mx3 revision 2](http://jonkagstrom.com/mx3/mx3_rev2.html)
+* mx3::mix passes [RRC-64-42-TF2-0.94](https://mostlymangling.blogspot.com/2019/01/better-stronger-mixer-and-test-procedure.html#TestProcedure), also see [mx3 version 2](http://jonkagstrom.com/mx3/mx3_rev2.html)
 * mx3::random passes [PractRand](http://pracrand.sourceforge.net/) 2^45 (>32TB) without suspicion
 * mx3::hash passes all [SMHasher](https://github.com/rurban/smhasher) tests
 
