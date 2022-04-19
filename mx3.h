@@ -76,16 +76,18 @@ inline uint64_t hash(const uint8_t* buf, size_t len, uint64_t seed) {
 		buf64 += 1;
 	}
 
-	const uint8_t* const tail = reinterpret_cast<const uint8_t*>(buf64);
-	uint64_t v = 0;
+	const uint8_t* const tail8 = reinterpret_cast<const uint8_t*>(buf64);
+	const uint16_t* const tail16 = reinterpret_cast<const uint16_t*>(buf64);
+	const uint32_t* const tail32 = reinterpret_cast<const uint32_t*>(buf64);
 	switch (len) {
-		case 7: v |= static_cast<uint64_t>(tail[6]) << 48;
-		case 6: v |= static_cast<uint64_t>(tail[5]) << 40;
-		case 5: v |= static_cast<uint64_t>(tail[4]) << 32;
-		case 4: v |= static_cast<uint64_t>(tail[3]) << 24;
-		case 3: v |= static_cast<uint64_t>(tail[2]) << 16;
-		case 2: v |= static_cast<uint64_t>(tail[1]) << 8;
-		case 1: h = mix_stream(h, v | tail[0]);
+		case 0: return mix(h);
+		case 1: return mix(mix_stream(h, tail8[0]));
+		case 2: return mix(mix_stream(h, tail16[0]));
+		case 3: return mix(mix_stream(h, tail16[0] | static_cast<uint64_t>(tail8[2]) << 16));
+		case 4: return mix(mix_stream(h, tail32[0]));
+		case 5: return mix(mix_stream(h, tail32[0] | static_cast<uint64_t>(tail8[4]) << 32));
+		case 6: return mix(mix_stream(h, tail32[0] | static_cast<uint64_t>(tail16[2]) << 32));
+		case 7: return mix(mix_stream(h, tail32[0] | static_cast<uint64_t>(tail16[2]) << 32 | static_cast<uint64_t>(tail8[6]) << 48));
 		default: ;
 	}
 	return mix(h);
